@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose")
+const _ = require("lodash")
 
 app.set('view engine', 'ejs');
 
@@ -44,17 +45,8 @@ const listSchema = new mongoose.Schema({
 
 const List = new mongoose.model("List", listSchema)
 
-// Item.deleteMany( (err)=>{
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log("successfully deleted similar documents");
-//     }
-// })
-
-
 app.get("/:customListName", (req,res)=>{
-  const customListName = req.params.customListName
+  const customListName = _.capitalize(req.params.customListName)
   List.findOne({name: customListName}, (err, foundList)=>{
     if(!err){
       if (foundList){
@@ -72,11 +64,6 @@ app.get("/:customListName", (req,res)=>{
   })
     
 })
-
-// app.get("/work/:id", function(req,res){
-//   const customListName= req.params.id;
-//   //res.render("list", {listTitle: "Work List", newListItems: workItems});
-// });
 
 app.get("/", function(req, res) {
 
@@ -115,18 +102,31 @@ app.post("/", function(req, res){
       res.redirect("/"+listName)
     })
   }
-  
 });
 
 app.post("/delete", (req,res)=>{
-  const itemToDelete= req.body.delete
-  Item.findByIdAndRemove(itemToDelete, (err)=>{
-    if (err)
-      console.log("Could not delete: ", err);
-    else
-      console.log("Successfully deleted item with id:",itemToDelete );
-    res.redirect("/");
-  })
+
+  const itemToDelete = req.body.delete
+  const listName = req.body.listName
+
+  if (listName === "Today"){
+    Item.findByIdAndRemove(itemToDelete, (err)=>{
+      if (err)
+        console.log("Could not delete: ", err);
+      else
+        console.log("Successfully deleted item with id:", itemToDelete );
+      res.redirect("/");
+    })
+  } else {
+    List.findOneAndUpdate({name: listName},{$pull:{items:{_id:itemToDelete}}},(err,foundList)=>{
+      if(!err){
+        res.redirect("/" + listName)
+      }
+    })
+  }
+
+
+
 })
 
 

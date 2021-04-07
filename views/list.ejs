@@ -9,8 +9,10 @@
       <form action="/delete" method="post">
         <div class="item">
           <input type="checkbox">
-          <p><%=  item.name  %></p>
-          <button type="submit" class= "deleteBtn" name="delete"  value ="<%=item._id%>">-</button>
+          <p><%=  item.name %></p>
+          <input type="hidden" name="listName" value= "<%= listTitle %>"></input>
+          <button type="submit" class= "deleteBtn" name="delete" value ="<%=item._id%>">-</button>
+          
         </div>
     </form>
     <%   })  %>  
