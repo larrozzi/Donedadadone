@@ -9,7 +9,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/todolistDB", {
+mongoose.connect("mongodb+srv://amin-yassine:Basics701@cluster0.jlgx0.mongodb.net/todolistDB", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false
@@ -136,5 +136,5 @@ app.get("/about", function(req, res){
 });
 
 app.listen (process.env.PORT || 3000, ()=>{
-  console.log("server listening on port 3000");
+  console.log("Server has started successfully ");
 })
